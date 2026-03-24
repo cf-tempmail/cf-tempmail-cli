@@ -1,6 +1,21 @@
 [package]
 name = "cf-tempmail-cli"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+description = "CLI tool for temporary email service powered by Cloudflare"
+license = "MIT"
+authors = ["CF TempMail"]
+repository = "https://github.com/cf-tempmail/cf-tempmail-cli"
 
 [dependencies]
+
+[package.metadata.deb]
+maintainer = "CF TempMail <noreply@cf-tempmail.github.io>"
+copyright = "2026, CF TempMail"
+license-file = ["LICENSE", "0"]
+depends = "$auto"
+section = "utility"
+priority = "optional"
+assets = [
+    ["target/release/cf-tempmail-cli", "usr/bin/cf-tempmail", "755"],
+]

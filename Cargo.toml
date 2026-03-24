@@ -7,7 +7,22 @@ license = "MIT"
 authors = ["CF TempMail"]
 repository = "https://github.com/cf-tempmail/cf-tempmail-cli"
 
+[[bin]]
+name = "cf-tempmail"
+path = "src/main.rs"
+
 [dependencies]
+clap = { version = "4", features = ["derive"] }
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs = "5"
+toml = "0.8"
+anyhow = "1"
+colored = "2"
+chrono = { version = "0.4", features = ["serde"] }
+textwrap = "0.16"
 
 [package.metadata.deb]
 maintainer = "CF TempMail <noreply@cf-tempmail.github.io>"

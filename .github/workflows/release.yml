@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            artifact: cf-tempmail
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            artifact: cf-tempmail
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            artifact: cf-tempmail
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            artifact: cf-tempmail
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            artifact: cf-tempmail.exe
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install cross-compilation dependencies (aarch64-linux)
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/${{ matrix.artifact }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Rename files
+        working-directory: artifacts
+        run: |
+          mv x86_64-unknown-linux-gnu/cf-tempmail cf-tempmail-x86_64-linux
+          mv aarch64-unknown-linux-gnu/cf-tempmail cf-tempmail-aarch64-linux
+          mv x86_64-apple-darwin/cf-tempmail cf-tempmail-x86_64-macos
+          mv aarch64-apple-darwin/cf-tempmail cf-tempmail-aarch64-macos
+          mv x86_64-pc-windows-msvc/cf-tempmail.exe cf-tempmail-x86_64-windows.exe
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: artifacts/cf-tempmail-*

@@ -1,6 +1,82 @@
 # CF TempMail CLI
 
+A command-line client for temporary email service.
+
 临时邮箱命令行客户端。
+
+## Installation
+
+### Download from Release
+
+```bash
+# Linux x86_64
+wget https://github.com/cf-tempmail/cf-tempmail-cli/releases/latest/download/cf-tempmail-x86_64-linux
+chmod +x cf-tempmail-x86_64-linux
+sudo mv cf-tempmail-x86_64-linux /usr/local/bin/cf-tempmail
+
+# Debian/Ubuntu
+wget https://github.com/cf-tempmail/cf-tempmail-cli/releases/latest/download/cf-tempmail_amd64.deb
+sudo dpkg -i cf-tempmail_amd64.deb
+```
+
+### Build from Source
+
+```bash
+git clone https://github.com/cf-tempmail/cf-tempmail-cli
+cd cf-tempmail-cli
+cargo build --release
+sudo mv target/release/cf-tempmail /usr/local/bin/
+```
+
+## Usage
+
+### Configure Server
+
+```bash
+cf-tempmail config --baseurl https://your-mail-domain.com
+```
+
+### Create Temporary Email
+
+```bash
+# Random
+cf-tempmail new
+
+# With prefix
+cf-tempmail new --prefix myname
+```
+
+### List Emails
+
+```bash
+cf-tempmail list
+```
+
+### Listen for New Emails
+
+```bash
+# Default 5s polling
+cf-tempmail listen
+
+# Custom interval
+cf-tempmail listen --interval 10
+```
+
+### Delete Email
+
+```bash
+cf-tempmail delete
+```
+
+## Config File
+
+Config file location:
+
+- Linux: `~/.config/cf-tempmail/config.toml`
+- macOS: `~/Library/Application Support/cf-tempmail/config.toml`
+- Windows: `%APPDATA%\cf-tempmail\config.toml`
+
+---
 
 ## 安装
 

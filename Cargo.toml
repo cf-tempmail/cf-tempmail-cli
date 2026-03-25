@@ -1,6 +1,6 @@
 [package]
 name = "cf-tempmail-cli"
-version = "0.1.0"
+version = "0.1.2"
 edition = "2021"
 description = "CLI tool for temporary email service powered by Cloudflare"
 license = "MIT"
@@ -32,5 +32,5 @@ depends = "$auto"
 section = "utility"
 priority = "optional"
 assets = [
-    ["target/release/cf-tempmail-cli", "usr/bin/cf-tempmail", "755"],
+    ["target/release/cf-tempmail", "usr/bin/cf-tempmail", "755"],
 ]

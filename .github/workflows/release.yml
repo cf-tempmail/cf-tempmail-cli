@@ -55,8 +55,28 @@ jobs:
           name: ${{ matrix.target }}
           path: target/${{ matrix.target }}/release/${{ matrix.artifact }}
 
+  debian:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-deb
+        run: cargo install cargo-deb
+
+      - name: Build debian package
+        run: cargo deb
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debian-package
+          path: target/debian/*.deb
+
   release:
-    needs: build
+    needs: [build, debian]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -74,9 +94,12 @@ jobs:
           mv x86_64-apple-darwin/cf-tempmail cf-tempmail-x86_64-macos
           mv aarch64-apple-darwin/cf-tempmail cf-tempmail-aarch64-macos
           mv x86_64-pc-windows-msvc/cf-tempmail.exe cf-tempmail-x86_64-windows.exe
+          mv debian-package/*.deb . || true
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          files: artifacts/cf-tempmail-*
+          files: |
+            artifacts/cf-tempmail-*
+            artifacts/*.deb
